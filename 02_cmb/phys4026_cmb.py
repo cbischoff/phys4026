@@ -7,7 +7,7 @@ Generate CMB realizations for analysis by students.
 
 import numpy as np
 
-def generate_cmb(Dl, Npix=512, map_size=20.0):
+def generate_cmb(Dl, npix=512, map_size=20.0):
     """
     generate_cmb
 
@@ -26,7 +26,7 @@ def generate_cmb(Dl, Npix=512, map_size=20.0):
 
     Returns
     -------
-    Tmap : array, shape=(1024,1024)
+    Tmap : array, shape=(npix,npix)
         Temperature map generated from the specified angular power spectrum
     
     """
@@ -38,14 +38,14 @@ def generate_cmb(Dl, Npix=512, map_size=20.0):
     
     # Calculate Fourier plane coordinates.
     dl = 2.0 * np.pi / np.radians(map_size)
-    lx = np.outer(np.ones(Npix), np.arange(-Npix/2, Npix/2) * dl)
+    lx = np.outer(np.ones(npix), np.arange(-npix/2, npix/2) * dl)
     ly = np.transpose(lx)
     r = np.sqrt(lx**2 + ly**2)
 
     # Create random realization in Fourier space
-    TF = np.fft.fft2(np.random.randn(Npix, Npix))
+    TF = np.fft.fft2(np.random.randn(npix, npix))
     TF = TF * np.interp(r, ell, np.sqrt(Cl), right=0)
     # Convert back to real space
     T = np.fft.ifft2(np.fft.ifftshift(TF))
-    T = np.real(T) * Npix * np.pi
+    T = np.real(T) * npix * np.pi
     return T
